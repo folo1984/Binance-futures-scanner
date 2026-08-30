@@ -1,4 +1,4 @@
-name: Binance Futures Scanner
+name: Binance Futures Scanner Test
 
 on:
   workflow_dispatch:
