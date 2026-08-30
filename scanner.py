@@ -13,14 +13,27 @@ def telegram(text):
     requests.post(url, json={"chat_id": CHAT_ID, "text": text})
 
 def get_symbols():
-    data = requests.get(f"{BASE}/fapi/v1/exchangeInfo").json()
+    r = requests.get(
+        f"{BASE}/fapi/v1/exchangeInfo",
+        timeout=20
+    )
+
+    print("BINANCE STATUS:", r.status_code)
+    print("BINANCE RESPONSE:", r.text[:1000])
+
+    r.raise_for_status()
+
+    data = r.json()
+
+    if "symbols" not in data:
+        raise RuntimeError(f"Binance API unexpected response: {data}")
+
     return [
         s["symbol"] for s in data["symbols"]
         if s["status"] == "TRADING"
         and s["quoteAsset"] == "USDT"
         and s["contractType"] == "PERPETUAL"
     ]
-
 def candles(symbol, interval="1h", limit=250):
     r = requests.get(
         f"{BASE}/fapi/v1/klines",
