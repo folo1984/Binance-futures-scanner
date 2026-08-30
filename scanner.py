@@ -141,8 +141,9 @@ def main():
             result = analyze(symbol)
             if result:
                 signals.append(result)
-        except Exception:
-            continue
+        except Exception as e:
+    print(f"ERROR {symbol}: {e}")
+    continue
 
     if not signals:
         telegram("🔎 Binance Futures 1H Scanner\n\nԱյս պահին ուժեղ LONG/SHORT setup չկա։")
